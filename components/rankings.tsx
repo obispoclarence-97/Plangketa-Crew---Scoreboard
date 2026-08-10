@@ -1,6 +1,7 @@
 "use client"
 
 import type { PlayerStats } from "@/lib/types"
+import { formatMargin, marginColorClass } from "@/lib/stats"
 
 const MEDALS: Record<number, { label: string; ring: string; bg: string }> = {
   1: { label: "1st", ring: "border-gold", bg: "bg-gold/15" },
@@ -34,7 +35,7 @@ export function Rankings({ stats }: { stats: PlayerStats[] }) {
       <div className="mb-4 flex items-center justify-between">
         <h2 className="font-display text-lg font-black tracking-wide text-gold gold-glow">RANKINGS</h2>
         <span className="font-display text-[10px] tracking-widest text-foreground/40">
-          W · WIN% · PTS
+          WIN% · PTS · MARGIN
         </span>
       </div>
 
@@ -67,6 +68,12 @@ export function Rankings({ stats }: { stats: PlayerStats[] }) {
                     {p.points}
                   </p>
                   <p className="text-[10px] tracking-widest text-foreground/40">PTS</p>
+                </div>
+                <div>
+                  <p className={`font-display text-lg font-black tabular-nums ${marginColorClass(p.margin)}`}>
+                    {formatMargin(p.margin)}
+                  </p>
+                  <p className="text-[10px] tracking-widest text-foreground/40">MARGIN</p>
                 </div>
               </div>
             </li>

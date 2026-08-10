@@ -16,6 +16,7 @@ export function computeStats(players: Player[], matches: Match[]): PlayerStats[]
       losses: 0,
       points: 0,
       winPct: 0,
+      margin: 0,
       rank: 0,
     })
   }
@@ -23,15 +24,19 @@ export function computeStats(players: Player[], matches: Match[]): PlayerStats[]
   for (const m of matches) {
     const s1 = base.get(m.player1Id)
     const s2 = base.get(m.player2Id)
+    // Signed point differential for this match, from each player's perspective.
+    const diff = m.score1 - m.score2
     if (s1) {
       s1.played += 1
       s1.points += m.score1
+      s1.margin += diff
       if (m.winnerId === m.player1Id) s1.wins += 1
       else s1.losses += 1
     }
     if (s2) {
       s2.played += 1
       s2.points += m.score2
+      s2.margin -= diff
       if (m.winnerId === m.player2Id) s2.wins += 1
       else s2.losses += 1
     }
@@ -54,4 +59,17 @@ export function computeStats(players: Player[], matches: Match[]): PlayerStats[]
   })
 
   return list
+}
+
+/** Format a cumulative margin with an explicit sign, e.g. +12, 0, -66. */
+export function formatMargin(margin: number): string {
+  if (margin > 0) return `+${margin}`
+  return String(margin)
+}
+
+/** Tailwind text color token for a margin value: green up, red down, muted flat. */
+export function marginColorClass(margin: number): string {
+  if (margin > 0) return "text-felt-light"
+  if (margin < 0) return "text-led"
+  return "text-foreground/50"
 }

@@ -9,7 +9,6 @@ type PlayerPanelProps = {
   selectedId: string
   onSelect: (id: string) => void
   score: number
-  raceTo: number
   onChange: (delta: number) => void
   onResetScore: () => void
   isWinner: boolean
@@ -22,7 +21,6 @@ export function PlayerPanel({
   selectedId,
   onSelect,
   score,
-  raceTo,
   onChange,
   onResetScore,
   isWinner,
@@ -41,8 +39,6 @@ export function PlayerPanel({
     return () => clearTimeout(t)
   }, [score])
 
-  const atCap = score >= raceTo
-
   return (
     <div
       className={`relative flex flex-1 flex-col items-center rounded-2xl border p-5 transition-all sm:p-6 ${
@@ -53,7 +49,7 @@ export function PlayerPanel({
     >
       {isWinner ? (
         <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-gold px-4 py-1 font-display text-[11px] font-black tracking-widest text-background">
-          WINNER
+          LEADING
         </span>
       ) : null}
 
@@ -103,18 +99,16 @@ export function PlayerPanel({
         <button
           type="button"
           onClick={() => onChange(1)}
-          disabled={atCap}
           aria-label={`${label} plus one`}
-          className="h-16 flex-[1.4] rounded-xl bg-gold font-display text-3xl font-black text-background shadow-lg transition-all hover:bg-gold-light active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+          className="h-16 flex-[1.4] rounded-xl bg-gold font-display text-3xl font-black text-background shadow-lg transition-all hover:bg-gold-light active:scale-95"
         >
           +1
         </button>
         <button
           type="button"
           onClick={() => onChange(2)}
-          disabled={atCap}
           aria-label={`${label} plus two`}
-          className="h-14 flex-1 rounded-xl border border-gold/40 bg-gold/15 font-display text-xl font-bold text-gold-light transition-all hover:bg-gold/25 active:scale-95 disabled:cursor-not-allowed disabled:opacity-30"
+          className="h-14 flex-1 rounded-xl border border-gold/40 bg-gold/15 font-display text-xl font-bold text-gold-light transition-all hover:bg-gold/25 active:scale-95"
         >
           +2
         </button>

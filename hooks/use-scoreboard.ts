@@ -5,8 +5,6 @@ import { createId, getDefaultState, loadState, saveState } from "@/lib/storage"
 import { computeStats } from "@/lib/stats"
 import type { Match, ScoreboardState } from "@/lib/types"
 
-export const RACE_OPTIONS = [7, 9, 11] as const
-
 export type SubmitResult =
   | { ok: true; match: Match }
   | { ok: false; error: string }
@@ -15,8 +13,7 @@ export function useScoreboard() {
   const [state, setState] = useState<ScoreboardState>(getDefaultState)
   const [hydrated, setHydrated] = useState(false)
 
-  // Current (in-progress) match — not persisted.
-  const [raceTo, setRaceTo] = useState<number>(7)
+  // Current (in-progress) match — not persisted. Open-ended scoring, no target.
   const [player1Id, setPlayer1Id] = useState<string>("")
   const [player2Id, setPlayer2Id] = useState<string>("")
   const [score1, setScore1] = useState(0)
@@ -44,23 +41,21 @@ export function useScoreboard() {
   const player1 = state.players.find((p) => p.id === player1Id) ?? null
   const player2 = state.players.find((p) => p.id === player2Id) ?? null
 
-  // Winner of the in-progress match, if a side has hit the race target.
+  // Player currently ahead in the in-progress match (open-ended, no target).
+  // Used only for a live "leading" highlight; the winner is finalized on submit.
   const liveWinnerId = useMemo(() => {
     if (player1Id === player2Id) return null
-    if (score1 >= raceTo && score1 > score2) return player1Id
-    if (score2 >= raceTo && score2 > score1) return player2Id
-    return null
-  }, [score1, score2, raceTo, player1Id, player2Id])
+    if (score1 === score2) return null
+    if (Math.max(score1, score2) <= 0) return null
+    return score1 > score2 ? player1Id : player2Id
+  }, [score1, score2, player1Id, player2Id])
 
-  const setScore = useCallback(
-    (side: 1 | 2, next: number) => {
-      const clamped = Math.max(0, next)
-      const capped = clamped > raceTo ? raceTo : clamped
-      if (side === 1) setScore1(capped)
-      else setScore2(capped)
-    },
-    [raceTo],
-  )
+  const setScore = useCallback((side: 1 | 2, next: number) => {
+    // Scores are open-ended but can never go below zero.
+    const clamped = Math.max(0, next)
+    if (side === 1) setScore1(clamped)
+    else setScore2(clamped)
+  }, [])
 
   const changeScore = useCallback(
     (side: 1 | 2, delta: number) => {
@@ -75,12 +70,6 @@ export function useScoreboard() {
     setScore2(0)
   }, [])
 
-  const changeRaceTo = useCallback((value: number) => {
-    setRaceTo(value)
-    setScore1((s) => Math.min(s, value))
-    setScore2((s) => Math.min(s, value))
-  }, [])
-
   const submitMatch = useCallback((): SubmitResult => {
     if (!player1Id || !player2Id) {
       return { ok: false, error: "Select both players before submitting." }
@@ -89,7 +78,7 @@ export function useScoreboard() {
       return { ok: false, error: "Please select two different players." }
     }
     if (score1 === score2) {
-      return { ok: false, error: "Tie games aren't ranked. Finish the match first." }
+      return { ok: false, error: "Scores are tied. One player must be ahead to submit." }
     }
 
     const p1 = state.players.find((p) => p.id === player1Id)
@@ -106,7 +95,6 @@ export function useScoreboard() {
       player2Name: p2.name,
       score1,
       score2,
-      raceTo,
       winnerId: winnerIsP1 ? p1.id : p2.id,
       winnerName: winnerIsP1 ? p1.name : p2.name,
     }
@@ -114,7 +102,7 @@ export function useScoreboard() {
     setState((prev) => ({ ...prev, matches: [match, ...prev.matches] }))
     resetMatch()
     return { ok: true, match }
-  }, [player1Id, player2Id, score1, score2, raceTo, state.players, resetMatch])
+  }, [player1Id, player2Id, score1, score2, state.players, resetMatch])
 
   const addPlayer = useCallback(
     (name: string): { ok: boolean; error?: string } => {
@@ -143,7 +131,6 @@ export function useScoreboard() {
     setPlayer1Id(fresh.players[0]?.id ?? "")
     setPlayer2Id(fresh.players[1]?.id ?? "")
     resetMatch()
-    setRaceTo(7)
   }, [resetMatch])
 
   return {
@@ -152,7 +139,6 @@ export function useScoreboard() {
     matches: state.matches,
     stats,
     // current match
-    raceTo,
     player1,
     player2,
     player1Id,
@@ -164,7 +150,6 @@ export function useScoreboard() {
     setPlayer1Id,
     setPlayer2Id,
     changeScore,
-    changeRaceTo,
     resetMatch,
     submitMatch,
     addPlayer,

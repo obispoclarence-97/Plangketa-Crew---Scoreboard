@@ -12,7 +12,11 @@ export type Match = {
   player2Name: string
   score1: number
   score2: number
-  raceTo: number
+  /**
+   * Legacy field from the old "Race to" format. Kept optional so previously
+   * stored matches still parse — new matches never set it.
+   */
+  raceTo?: number
   winnerId: string
   winnerName: string
 }
@@ -26,6 +30,12 @@ export type PlayerStats = {
   losses: number
   points: number
   winPct: number
+  /**
+   * Cumulative point margin across all matches: for every match a player is in,
+   * add (their score − opponent score). Winners gain, losers lose. This is a
+   * running total derived from the full match history, never reset on its own.
+   */
+  margin: number
   rank: number
 }
 

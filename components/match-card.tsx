@@ -1,13 +1,10 @@
 "use client"
 
 import { PlayerPanel } from "./player-panel"
-import { RACE_OPTIONS } from "@/hooks/use-scoreboard"
 import type { Player } from "@/lib/types"
 
 type MatchCardProps = {
   players: Player[]
-  raceTo: number
-  onChangeRaceTo: (value: number) => void
   player1Id: string
   player2Id: string
   onSelectP1: (id: string) => void
@@ -23,8 +20,6 @@ type MatchCardProps = {
 
 export function MatchCard({
   players,
-  raceTo,
-  onChangeRaceTo,
   player1Id,
   player2Id,
   onSelectP1,
@@ -51,35 +46,14 @@ export function MatchCard({
         />
       ))}
 
-      {/* Match format selector */}
-      <div className="mb-6 flex flex-col items-center gap-2">
+      {/* Match banner */}
+      <div className="mb-6 flex flex-col items-center gap-1">
         <span className="font-display text-[11px] font-semibold tracking-[0.3em] text-gold-light/80">
-          MATCH FORMAT
+          LIVE MATCH
         </span>
-        <div
-          className="flex items-center gap-2 rounded-full border border-gold/40 bg-background/50 p-1"
-          role="group"
-          aria-label="Race to target"
-        >
-          <span className="pl-3 pr-1 font-display text-sm font-medium text-foreground/60">
-            RACE TO
-          </span>
-          {RACE_OPTIONS.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              onClick={() => onChangeRaceTo(opt)}
-              aria-pressed={raceTo === opt}
-              className={`h-10 w-12 rounded-full font-display text-lg font-black transition-all ${
-                raceTo === opt
-                  ? "bg-gold text-background shadow"
-                  : "text-gold-light hover:bg-gold/15"
-              }`}
-            >
-              {opt}
-            </button>
-          ))}
-        </div>
+        <span className="font-display text-[10px] tracking-[0.25em] text-foreground/45">
+          OPEN SCORING · HIGHER SCORE WINS
+        </span>
       </div>
 
       {/* Competitor panels */}
@@ -90,7 +64,6 @@ export function MatchCard({
           selectedId={player1Id}
           onSelect={onSelectP1}
           score={score1}
-          raceTo={raceTo}
           onChange={(d) => onChangeScore(1, d)}
           onResetScore={() => onResetScore(1)}
           isWinner={liveWinnerId === player1Id && player1Id !== ""}
@@ -107,7 +80,6 @@ export function MatchCard({
           selectedId={player2Id}
           onSelect={onSelectP2}
           score={score2}
-          raceTo={raceTo}
           onChange={(d) => onChangeScore(2, d)}
           onResetScore={() => onResetScore(2)}
           isWinner={liveWinnerId === player2Id && player2Id !== ""}
