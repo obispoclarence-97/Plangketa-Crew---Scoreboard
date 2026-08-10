@@ -47,20 +47,17 @@ const handleFullscreenChange = () => {
 setIsFullscreen(Boolean(document.fullscreenElement))
 }
 
-```
 document.addEventListener("fullscreenchange", handleFullscreenChange)
 
 return () => {
   document.removeEventListener("fullscreenchange", handleFullscreenChange)
 }
-```
 
 }, [])
 
 const handleSubmit = useCallback(() => {
 const result = sb.submitMatch()
 
-```
 if (!result.ok) {
   showToast(result.error, "error")
   return
@@ -78,7 +75,6 @@ const winnerMessage =
   ")"
 
 showToast(winnerMessage, "success")
-```
 
 }, [sb, showToast])
 
@@ -104,7 +100,6 @@ return ( <div
    className="min-h-screen bg-background text-foreground"
  > <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
 
-```
     <ScoreboardHeader
       isFullscreen={isFullscreen}
       onToggleFullscreen={toggleFullscreen}
@@ -190,10 +185,11 @@ return ( <div
   />
 
   <Toast
-        toast={toast}
-        onDismiss={() => setToast(null)}
-      />
+    toast={toast}
+    onDismiss={() => setToast(null)}
+  />
 
-    </div>
-  )
+</div>
+
+)
 }
