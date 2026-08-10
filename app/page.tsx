@@ -21,7 +21,11 @@ const [confirm, setConfirm] = useState<null | "clearHistory" | "resetAll">(null)
 
 const showToast = useCallback(
 (message: string, tone: ToastData["tone"]) => {
-setToast({ id: Date.now(), message, tone })
+setToast({
+id: Date.now(),
+message,
+tone,
+})
 },
 [],
 )
@@ -34,20 +38,26 @@ await rootRef.current?.requestFullscreen()
 await document.exitFullscreen()
 }
 } catch {
-setIsFullscreen((v) => !v)
+setIsFullscreen((value) => !value)
 }
 }, [])
 
 useEffect(() => {
-const onChange = () => {
+const handleFullscreenChange = () => {
 setIsFullscreen(Boolean(document.fullscreenElement))
 }
 
 ```
-document.addEventListener("fullscreenchange", onChange)
+document.addEventListener(
+  "fullscreenchange",
+  handleFullscreenChange,
+)
 
 return () => {
-  document.removeEventListener("fullscreenchange", onChange)
+  document.removeEventListener(
+    "fullscreenchange",
+    handleFullscreenChange,
+  )
 }
 ```
 
@@ -62,15 +72,15 @@ if (!result.ok) {
   return
 }
 
-const m = result.match
+const match = result.match
 
 const winnerMessage =
   "WINNER: " +
-  m.winnerName +
+  match.winnerName +
   " (" +
-  Math.max(m.score1, m.score2) +
+  Math.max(match.score1, match.score2) +
   "—" +
-  Math.min(m.score1, m.score2) +
+  Math.min(match.score1, match.score2) +
   ")"
 
 showToast(winnerMessage, "success")
@@ -80,10 +90,11 @@ showToast(winnerMessage, "success")
 
 const handleResetScore = useCallback(
 (side: 1 | 2) => {
-sb.changeScore(
-side,
-side === 1 ? -sb.score1 : -sb.score2,
-)
+if (side === 1) {
+sb.changeScore(1, -sb.score1)
+} else {
+sb.changeScore(2, -sb.score2)
+}
 },
 [sb],
 )
@@ -132,9 +143,11 @@ return ( <div
 
     {!isFullscreen ? (
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
         <Rankings stats={sb.stats} />
 
         <div className="flex flex-col gap-6">
+
           <RecentMatches
             matches={sb.matches}
             onClearHistory={() => setConfirm("clearHistory")}
@@ -144,7 +157,9 @@ return ( <div
             stats={sb.stats}
             onAddPlayer={sb.addPlayer}
           />
+
         </div>
+
       </div>
     ) : null}
 
@@ -184,6 +199,7 @@ return ( <div
     toast={toast}
     onDismiss={() => setToast(null)}
   />
+
 </div>
 ```
 
