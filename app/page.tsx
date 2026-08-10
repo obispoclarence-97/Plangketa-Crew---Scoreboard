@@ -47,7 +47,6 @@ const handleFullscreenChange = () => {
 setIsFullscreen(Boolean(document.fullscreenElement))
 }
 
-```
 document.addEventListener(
   "fullscreenchange",
   handleFullscreenChange,
@@ -59,7 +58,6 @@ return () => {
     handleFullscreenChange,
   )
 }
-```
 
 }, [])
 
@@ -84,7 +82,6 @@ const winnerMessage =
   ")"
 
 showToast(winnerMessage, "success")
-```
 
 }, [sb, showToast])
 
