@@ -64,10 +64,16 @@ if (!result.ok) {
 
 const m = result.match
 
-showToast(
-  `WINNER: ${m.winnerName} (${Math.max(m.score1, m.score2)}—${Math.min(m.score1, m.score2)})`,
-  "success",
-)
+const winnerMessage =
+  "WINNER: " +
+  m.winnerName +
+  " (" +
+  Math.max(m.score1, m.score2) +
+  "—" +
+  Math.min(m.score1, m.score2) +
+  ")"
+
+showToast(winnerMessage, "success")
 ```
 
 }, [sb, showToast])
@@ -84,7 +90,7 @@ side === 1 ? -sb.score1 : -sb.score2,
 
 if (!sb.hydrated) {
 return ( <main className="flex min-h-screen items-center justify-center bg-background"> <p className="font-display text-sm tracking-[0.25em] text-foreground/50">
-LOADING SCOREBOARD… </p> </main>
+LOADING SCOREBOARD... </p> </main>
 )
 }
 
@@ -92,13 +98,14 @@ return ( <div
    ref={rootRef}
    className="min-h-screen bg-background text-foreground"
  > <main className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-<ScoreboardHeader
-isFullscreen={isFullscreen}
-onToggleFullscreen={toggleFullscreen}
-onResetAll={() => setConfirm("resetAll")}
-/>
 
 ```
+    <ScoreboardHeader
+      isFullscreen={isFullscreen}
+      onToggleFullscreen={toggleFullscreen}
+      onResetAll={() => setConfirm("resetAll")}
+    />
+
     {!isFullscreen ? (
       <StatsBar
         totalMatches={sb.matches.length}
@@ -144,6 +151,7 @@ onResetAll={() => setConfirm("resetAll")}
     <footer className="pb-4 text-center font-display text-[10px] tracking-[0.3em] text-foreground/30">
       PLANKETA CREW · DIGITAL BILLIARDS SCOREBOARD
     </footer>
+
   </main>
 
   <ConfirmDialog
