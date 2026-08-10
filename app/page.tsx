@@ -13,7 +13,7 @@ import { Toast, type ToastData } from "@/components/toast"
 
 export default function Page() {
 const sb = useScoreboard()
-const rootRef = useRef<HTMLElement | null>(null)
+const rootRef = useRef<HTMLDivElement | null>(null)
 
 const [isFullscreen, setIsFullscreen] = useState(false)
 const [toast, setToast] = useState<ToastData | null>(null)
