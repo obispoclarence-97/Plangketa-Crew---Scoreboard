@@ -32,7 +32,6 @@ return ( <div className="rounded-xl border border-foreground/10 bg-background/40
     </p>
   ) : null}
 </div>
-```
 
 )
 }
@@ -66,7 +65,6 @@ leader
 }
 />
 
-```
   <StatCard
     label="MATCHES"
     value={String(totalMatches)}
@@ -85,7 +83,6 @@ leader
     sub="Cumulative point margin"
   />
 </div>
-```
 
 )
 }
