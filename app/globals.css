@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+@theme inline {
+  /* Core palette */
+  --color-background: #0a0b0a;
+  --color-foreground: #f4efe4;
+  --color-muted: #8a9a8e;
+
+  /* Pool-table felt green (primary) */
+  --color-felt: #0c6b3a;
+  --color-felt-dark: #073e22;
+  --color-felt-light: #12904e;
+
+  /* Gold / brass accent */
+  --color-gold: #d9b64e;
+  --color-gold-light: #f2d98a;
+  --color-gold-dark: #a8862f;
+
+  /* Walnut wood rails */
+  --color-wood: #5a3a20;
+  --color-wood-light: #7a5230;
+  --color-wood-dark: #3a2413;
+
+  /* Scoreboard LED */
+  --color-led: #ff5b4a;
+
+  --font-display: var(--font-orbitron), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  --radius: 0.5rem;
+}
+
+* {
+  border-color: color-mix(in oklab, var(--color-gold) 20%, transparent);
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+/* Felt texture: subtle radial cloth + fine noise using layered gradients */
+.felt-surface {
+  background-color: var(--color-felt-dark);
+  background-image:
+    radial-gradient(circle at 50% 30%, color-mix(in oklab, var(--color-felt-light) 55%, transparent) 0%, transparent 60%),
+    repeating-linear-gradient(45deg, rgba(0, 0, 0, 0.06) 0px, rgba(0, 0, 0, 0.06) 1px, transparent 1px, transparent 3px),
+    repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.02) 0px, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 3px);
+}
+
+/* Wood rail border look */
+.wood-rail {
+  background-color: var(--color-wood);
+  background-image:
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.25) 0px, rgba(0, 0, 0, 0.25) 2px, transparent 2px, transparent 14px),
+    linear-gradient(180deg, var(--color-wood-light), var(--color-wood-dark));
+}
+
+/* LED digit glow */
+.led-glow {
+  text-shadow:
+    0 0 8px color-mix(in oklab, currentColor 60%, transparent),
+    0 0 22px color-mix(in oklab, currentColor 35%, transparent);
+}
+
+.gold-glow {
+  text-shadow: 0 0 14px color-mix(in oklab, var(--color-gold) 45%, transparent);
+}
+
+@keyframes score-pop {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.18); }
+  100% { transform: scale(1); }
+}
+.animate-score-pop {
+  animation: score-pop 0.35s ease-out;
+}
+
+@keyframes pulse-live {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.animate-pulse-live {
+  animation: pulse-live 1.4s ease-in-out infinite;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-rise-in {
+  animation: rise-in 0.4s ease-out both;
+}
+
+@keyframes winner-shine {
+  0%, 100% { box-shadow: 0 0 0 1px var(--color-gold), 0 0 24px color-mix(in oklab, var(--color-gold) 30%, transparent); }
+  50% { box-shadow: 0 0 0 2px var(--color-gold-light), 0 0 44px color-mix(in oklab, var(--color-gold) 55%, transparent); }
+}
+.animate-winner {
+  animation: winner-shine 1.6s ease-in-out infinite;
+}
