@@ -48,16 +48,10 @@ setIsFullscreen(Boolean(document.fullscreenElement))
 }
 
 ```
-document.addEventListener(
-  "fullscreenchange",
-  handleFullscreenChange,
-)
+document.addEventListener("fullscreenchange", handleFullscreenChange)
 
 return () => {
-  document.removeEventListener(
-    "fullscreenchange",
-    handleFullscreenChange,
-  )
+  document.removeEventListener("fullscreenchange", handleFullscreenChange)
 }
 ```
 
@@ -197,10 +191,7 @@ return ( <div
 
   <Toast
     toast={toast}
-    onDismiss={() => setToast(null)}
-  />
-
-</div>
+    onDismiss={() => setTo
 
 )
 }
