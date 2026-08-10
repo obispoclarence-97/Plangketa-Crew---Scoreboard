@@ -190,8 +190,10 @@ return ( <div
   />
 
   <Toast
-    toast={toast}
-    onDismiss={() => setTo
+        toast={toast}
+        onDismiss={() => setToast(null)}
+      />
 
-)
+    </div>
+  )
 }
